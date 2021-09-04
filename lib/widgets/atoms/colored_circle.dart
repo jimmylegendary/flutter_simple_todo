@@ -6,20 +6,25 @@ class ColoredCircle extends StatelessWidget {
     this.color = Colors.grey,
     this.height = 12,
     this.width = 12,
+    this.onTab,
   });
 
   final Color color;
   final double height;
   final double width;
+  Function()? onTab;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
+    return GestureDetector(
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+        ),
       ),
+      onTap: onTab,
     );
   }
 }

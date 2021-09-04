@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_simple_todo/controllers/todo_controller.dart';
 import 'package:flutter_simple_todo/pages/todo_edit.dart';
 import 'package:flutter_simple_todo/widgets/atoms/colored_circle.dart';
@@ -27,9 +28,9 @@ class TodoItemList extends StatelessWidget {
         final todoItem = todoItmes?[index];
         return Row(
           children: [
-            GestureDetector(
-              child: ColoredCircle(),
-              onTap: () {
+            ColoredCircle(
+              color: todoItem?.color ?? Colors.grey,
+              onTab: () {
                 showTodoEditor(
                   context: context,
                   date: date,

@@ -24,44 +24,47 @@ class TodoHome extends GetView<TodoHomeController> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: ListView.separated(
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              DateFormat('yyyy년 MM월 dd일').format(
-                                controller.todoItemGroup[index].date ??
-                                    DateTime.now(),
+                  child: controller.todoItemGroup.length > 0
+                      ? ListView.separated(
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 5),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    DateFormat('yyyy년 MM월 dd일').format(
+                                      controller.todoItemGroup[index].date ??
+                                          DateTime.now(),
+                                    ),
+                                  ),
+                                  Text(
+                                    DateFormat('오전 hh시 mm분 수정').format(
+                                      controller.todoItemGroup[index]
+                                              .modifiedTime ??
+                                          DateTime.now(),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  TodoItemList(
+                                    index: index,
+                                    date: controller.todoItemGroup[index].date,
+                                    modifiedTime: controller
+                                        .todoItemGroup[index].modifiedTime,
+                                  ),
+                                ],
                               ),
-                            ),
-                            Text(
-                              DateFormat('오전 hh시 mm분 수정').format(
-                                controller.todoItemGroup[index].modifiedTime ??
-                                    DateTime.now(),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            TodoItemList(
-                              index: index,
-                              date: controller.todoItemGroup[index].date,
-                              modifiedTime:
-                                  controller.todoItemGroup[index].modifiedTime,
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemCount: controller.todoItemGroup.length,
-                  ),
+                            );
+                          },
+                          separatorBuilder: (context, index) => const Divider(),
+                          itemCount: controller.todoItemGroup.length,
+                        )
+                      : Container(),
                 ),
               ],
             ),

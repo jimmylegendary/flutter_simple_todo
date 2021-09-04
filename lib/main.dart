@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_todo/controllers/todo_controller.dart';
+import 'package:flutter_simple_todo/models/mtodo_item.dart';
 import 'package:flutter_simple_todo/pages/todo_home.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -7,7 +8,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   await Hive.initFlutter();
-  await Hive.openBox('TodoList');
+  Hive.registerAdapter(TodoItemGroupAdapter());
+  Hive.registerAdapter(TodoItemAdapter());
+  await Hive.openBox<TodoItemGroup>('TodoList');
   runApp(TodoApp());
 }
 
