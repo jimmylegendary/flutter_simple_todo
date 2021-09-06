@@ -19,17 +19,18 @@ class TodoItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final todoItmes = controller.todoItemGroup[index].todoItems;
+    final todoItmes =
+        controller.todoItemGroupMap.values.elementAt(index).todoItems;
 
     return ListView.builder(
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
-        final todoItem = todoItmes?[index];
+        final todoItem = todoItmes[index];
         return Row(
           children: [
             ColoredCircle(
-              color: todoItem?.color ?? Colors.grey,
+              color: todoItem.color,
               onTab: () {
                 showTodoEditor(
                   context: context,
@@ -44,17 +45,17 @@ class TodoItemList extends StatelessWidget {
             ),
             Text(
               DateFormat('hh시 mm분').format(
-                todoItem?.time ?? DateTime.now(),
+                todoItem.time,
               ),
             ),
             SizedBox(
               width: 10,
             ),
-            Text(todoItem?.text ?? ''),
+            Text(todoItem.text),
           ],
         );
       },
-      itemCount: todoItmes?.length,
+      itemCount: todoItmes.length,
     );
   }
 }

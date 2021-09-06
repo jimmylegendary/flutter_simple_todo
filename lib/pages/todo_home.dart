@@ -24,12 +24,15 @@ class TodoHome extends GetView<TodoHomeController> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: controller.todoItemGroup.length > 0
+                  child: controller.todoItemGroupMap.length > 0
                       ? ListView.separated(
                           physics: BouncingScrollPhysics(),
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
                           itemBuilder: (context, index) {
+                            var todoItemGroup = controller
+                                .todoItemGroupMap.values
+                                .elementAt(index);
                             return Padding(
                               padding: EdgeInsets.symmetric(vertical: 5),
                               child: Column(
@@ -37,15 +40,14 @@ class TodoHome extends GetView<TodoHomeController> {
                                 children: [
                                   Text(
                                     DateFormat('yyyy년 MM월 dd일').format(
-                                      controller.todoItemGroup[index].date ??
-                                          DateTime.now(),
+                                      todoItemGroup.date,
                                     ),
                                   ),
                                   Text(
-                                    DateFormat('오전 hh시 mm분 수정').format(
-                                      controller.todoItemGroup[index]
-                                              .modifiedTime ??
-                                          DateTime.now(),
+                                    DateFormat(
+                                            '${todoItemGroup.modifiedTime.hour > 12 ? '오후' : '오전'} hh시 mm분 수정')
+                                        .format(
+                                      todoItemGroup.modifiedTime,
                                     ),
                                   ),
                                   SizedBox(
@@ -53,16 +55,15 @@ class TodoHome extends GetView<TodoHomeController> {
                                   ),
                                   TodoItemList(
                                     index: index,
-                                    date: controller.todoItemGroup[index].date,
-                                    modifiedTime: controller
-                                        .todoItemGroup[index].modifiedTime,
+                                    date: todoItemGroup.date,
+                                    modifiedTime: todoItemGroup.modifiedTime,
                                   ),
                                 ],
                               ),
                             );
                           },
                           separatorBuilder: (context, index) => const Divider(),
-                          itemCount: controller.todoItemGroup.length,
+                          itemCount: controller.todoItemGroupMap.length,
                         )
                       : Container(),
                 ),

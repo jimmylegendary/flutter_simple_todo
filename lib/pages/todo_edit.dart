@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_todo/controllers/todo_controller.dart';
 import 'package:flutter_simple_todo/models/mtodo_item.dart';
+import 'package:flutter_simple_todo/utils/generate_key.dart';
 import 'package:flutter_simple_todo/widgets/atoms/colored_circle.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -18,6 +19,14 @@ DateTime convertTodToDt(TimeOfDay tod) {
   );
 }
 
+TimeOfDay convertDtToTod(DateTime? dt) {
+  var res = TimeOfDay.now();
+  if (dt != null) {
+    res = TimeOfDay(hour: dt.hour, minute: dt.minute);
+  }
+  return res;
+}
+
 void showTodoEditor({
   required BuildContext context,
   required DateTime date,
@@ -25,14 +34,16 @@ void showTodoEditor({
   TodoItem? todoItem,
 }) {
   final _textTextController = TextEditingController();
-  String _selectedTime = '${TimeOfDay.now().hour}시 ${TimeOfDay.now().minute}분';
+  final currentTime = TimeOfDay.now();
+  String _selectedTimeText = (currentTime.hour > 12) ? '오후' : '오전';
+  _selectedTimeText += '${currentTime.hourOfPeriod}시 ${currentTime.minute}분';
   Color _selectedColor = todoItem?.color ?? Colors.grey;
-  DateTime _selectedDateTime = date;
+  DateTime _selectedTime = date;
   final controller = Get.find<TodoHomeController>();
 
-  if (modifiedTime != null)
-    _selectedTime = DateFormat('hh시 mm분').format(modifiedTime);
-  if (todoItem != null) _textTextController.text = todoItem.text!;
+  if (todoItem != null)
+    _selectedTimeText = DateFormat('hh시 mm분').format(todoItem.time);
+  if (todoItem != null) _textTextController.text = todoItem.text;
   showDialog(
     context: context,
     builder: (context) {
@@ -57,25 +68,27 @@ void showTodoEditor({
                       width: 50,
                       child: GestureDetector(
                         child: Text(
-                          _selectedTime,
+                          _selectedTimeText,
                           style: TextStyle(
-                            fontSize: 9,
+                            fontSize: 7,
                           ),
                         ),
                         onTap: () {
                           Future<TimeOfDay?> selectedTime = showTimePicker(
                             context: context,
-                            initialTime: TimeOfDay.now(),
+                            initialTime: convertDtToTod(modifiedTime),
                           );
                           selectedTime.then(
                             (timeOfDay) {
                               setState(
                                 () {
-                                  _selectedTime =
-                                      '${timeOfDay?.hour}시 ${timeOfDay?.minute}분';
+                                  timeOfDay = timeOfDay ?? TimeOfDay.now();
+                                  _selectedTimeText =
+                                      (timeOfDay!.hour > 12) ? '오후' : '오전';
+                                  _selectedTimeText +=
+                                      '${timeOfDay!.hourOfPeriod}시 ${timeOfDay!.minute}분';
                                   if (timeOfDay != null)
-                                    _selectedDateTime =
-                                        convertTodToDt(timeOfDay);
+                                    _selectedTime = convertTodToDt(timeOfDay!);
                                 },
                               );
                             },
@@ -266,17 +279,19 @@ void showTodoEditor({
                   child: ElevatedButton(
                     onPressed: () {
                       Get.back();
-                      var item = box.get(date.hashCode);
+                      var item = box.get(
+                        generateKey(date),
+                      );
                       if (item != null) {
-                        item.todoItems?.add(
+                        item.todoItems.add(
                           TodoItem(
                             color: _selectedColor,
-                            time: _selectedDateTime,
+                            time: _selectedTime,
                             text: _textTextController.text,
                           ),
                         );
                         item.modifiedTime = DateTime.now();
-                        box.put(date.hashCode, item);
+                        box.put(generateKey(date), item);
                       } else {
                         item = TodoItemGroup(
                           date: date,
@@ -284,17 +299,18 @@ void showTodoEditor({
                           todoItems: [
                             TodoItem(
                               color: _selectedColor,
-                              time: _selectedDateTime,
+                              time: _selectedTime,
                               text: _textTextController.text,
                             ),
                           ],
                         );
                         box.put(
-                          date.hashCode,
+                          generateKey(date),
                           item,
                         );
                       }
-                      controller.todoItemGroup.add(item);
+                      controller.todoItemGroupMap
+                          .assign(generateKey(item.date), item);
                     },
                     child: Text('확인'),
                   ),

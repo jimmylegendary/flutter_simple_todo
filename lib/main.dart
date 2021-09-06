@@ -10,6 +10,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TodoItemGroupAdapter());
   Hive.registerAdapter(TodoItemAdapter());
+  Hive.registerAdapter(MaterialColorAdapter());
   await Hive.openBox<TodoItemGroup>('TodoList');
   runApp(TodoApp());
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 part 'mtodo_item.g.dart';
@@ -6,35 +7,36 @@ part 'mtodo_item.g.dart';
 @HiveType(typeId: 0)
 class TodoItemGroup extends HiveObject {
   TodoItemGroup({
-    this.date,
-    this.modifiedTime,
-    this.todoItems,
+    required this.date,
+    required this.modifiedTime,
+    required this.todoItems,
   });
 
   @HiveField(0)
-  DateTime? date;
+  DateTime date;
 
   @HiveField(1)
-  DateTime? modifiedTime;
+  DateTime modifiedTime;
 
   @HiveField(2)
-  List<TodoItem>? todoItems;
+  List<TodoItem> todoItems;
 }
 
 @HiveType(typeId: 1)
 class TodoItem extends HiveObject {
   TodoItem({
-    this.color,
-    this.time,
-    this.text,
+    required this.color,
+    required this.time,
+    required this.text,
   });
 
   @HiveField(0)
-  Color? color;
+  @HiveType(typeId: 2)
+  Color color;
 
   @HiveField(1)
-  DateTime? time;
+  DateTime time;
 
   @HiveField(2)
-  String? text;
+  String text;
 }

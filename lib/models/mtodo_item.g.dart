@@ -6,6 +6,29 @@ part of 'mtodo_item.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
+class MaterialColorAdapter extends TypeAdapter<MaterialColor> {
+  @override
+  final int typeId = 2;
+
+  @override
+  MaterialColor read(BinaryReader reader) =>
+      MaterialColor(reader.readInt(), Map());
+
+  @override
+  void write(BinaryWriter writer, MaterialColor obj) =>
+      writer.writeInt(obj.value);
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TodoItemAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
 class TodoItemGroupAdapter extends TypeAdapter<TodoItemGroup> {
   @override
   final int typeId = 0;
@@ -17,9 +40,9 @@ class TodoItemGroupAdapter extends TypeAdapter<TodoItemGroup> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TodoItemGroup(
-      date: fields[0] as DateTime?,
-      modifiedTime: fields[1] as DateTime?,
-      todoItems: (fields[2] as List?)?.cast<TodoItem>(),
+      date: fields[0] as DateTime,
+      modifiedTime: fields[1] as DateTime,
+      todoItems: (fields[2] as List).cast<TodoItem>(),
     );
   }
 
@@ -57,9 +80,9 @@ class TodoItemAdapter extends TypeAdapter<TodoItem> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TodoItem(
-      color: fields[0] as Color?,
-      time: fields[1] as DateTime?,
-      text: fields[2] as String?,
+      color: fields[0] as Color,
+      time: fields[1] as DateTime,
+      text: fields[2] as String,
     );
   }
 
